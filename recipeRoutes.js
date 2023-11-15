@@ -1,112 +1,89 @@
-// recipeRoutes.js
 const express = require('express');
-const client = require('./connection.js'); // Ensure the path is correct
-
 const router = express.Router();
+const Recipe = require('../models/Recipe'); // Import the Recipe model
 
 // Route for getting all recipes
-router.get('/', (req, res) => {
-    client.query(`Select * from recipes`, (err, result) => {
-        if (!err) {
-            res.send(result.rows);
-        } else {
-            console.log(err.message);
-            res.status(500).send('Error retrieving recipes');
-        }
-    });
-    // Consider managing the client connection lifecycle appropriately
+router.get('/', async (req, res) => {
+    try {
+        const recipes = await Recipe.find(); // Use the Recipe model to query all recipes
+        res.json(recipes);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
 // Route for getting a specific recipe by ID
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     const recipeId = req.params.id;
-    client.query(`Select * from recipes where id=${recipeId}`, (err, result) => {
-        if (!err) {
-            res.send(result.rows);
-        } else {
-            console.log(err.message);
-            res.status(500).send('Error retrieving recipe');
+    try {
+        const recipe = await Recipe.findById(recipeId); // Use the Recipe model to find a recipe by ID
+        if (!recipe) {
+            return res.status(404).json({ message: 'Recipe not found' });
         }
-    });
-    // Consider managing the client connection lifecycle appropriately
+        res.json(recipe);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
 // Route for creating a new recipe
-router.post('/', (req, res) => {
-    const recipe = req.body;
-    let insertQuery = `insert into recipes(user_id, title, ingredients, instructions, prep_time, cook_time, servings, tags, image) 
-                       values (
-                           ${recipe.user_id}, 
-                           '${recipe.title}', 
-                           '${recipe.ingredients}', 
-                           '${recipe.instructions}', 
-                           ${recipe.prep_time}, 
-                           ${recipe.cook_time}, 
-                           ${recipe.servings}, 
-                           '${recipe.tags}', 
-                           '${recipe.image}'
-                       )`;
-
-    console.log("Received recipe:", recipe);
-    console.log("Executing query:", insertQuery);
-
-    client.query(insertQuery, (err, result) => {
-        if (!err) {
-            res.send('Recipe insertion was successful');
-        } else {
-            console.log("Error in recipe insertion:", err);
-            res.status(500).send('Error in recipe insertion');
-        }
+router.post('/', async (req, res) => {
+    const recipe = new Recipe({
+        title: req.body.title,
+        ingredients: req.body.ingredients,
+        instructions: req.body.instructions,
+        prep_time: req.body.prep_time,
+        cook_time: req.body.cook_time,
+        servings: req.body.servings,
+        tags: req.body.tags,
+        image: req.body.image,
     });
-    // Consider managing the client connection lifecycle appropriately
+
+    try {
+        const newRecipe = await recipe.save(); // Save the new recipe using the Recipe model
+        res.status(201).json(newRecipe);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 });
 
-// Update recipe by ID
-router.put('/:id', (req, res) => {
+// Route for updating a recipe by ID
+router.put('/:id', async (req, res) => {
     const recipeId = req.params.id;
     const updatedRecipeData = req.body;
 
-    // Construct the update query
-    let updateQuery = `UPDATE recipes
-                      SET user_id = ${updatedRecipeData.user_id},
-                          title = '${updatedRecipeData.title}',
-                          ingredients = '${updatedRecipeData.ingredients}',
-                          instructions = '${updatedRecipeData.instructions}',
-                          prep_time = ${updatedRecipeData.prep_time},
-                          cook_time = ${updatedRecipeData.cook_time},
-                          servings = ${updatedRecipeData.servings},
-                          tags = '${updatedRecipeData.tags}',
-                          image = '${updatedRecipeData.image}'
-                      WHERE id = ${recipeId}`;
+    try {
+        const updatedRecipe = await Recipe.findByIdAndUpdate(
+            recipeId,
+            updatedRecipeData,
+            { new: true } // Return the updated recipe
+        );
 
-    client.query(updateQuery, (err, result) => {
-        if (!err) {
-            res.send('Recipe update was successful');
-        } else {
-            console.log(err.message);
-            res.status(500).send('Error in recipe update');
+        if (!updatedRecipe) {
+            return res.status(404).json({ message: 'Recipe not found' });
         }
-    });
-    // Consider managing the client connection lifecycle appropriately
+
+        res.json(updatedRecipe);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
 // Route for deleting a specific recipe by ID
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     const recipeId = req.params.id;
-    client.query(`DELETE FROM recipes WHERE id=${recipeId}`, (err, result) => {
-        if (!err) {
-            if (result.rowCount == 0) {
-                res.status(404).send('Recipe not found');
-            } else {
-                res.send('Recipe deleted successfully');
-            }
-        } else {
-            console.log(err.message);
-            res.status(500).send('Error deleting recipe');
-        }
-    });
-    // Consider managing the client connection lifecycle appropriately
-});
 
+    try {
+        const deletedRecipe = await Recipe.findByIdAndRemove(recipeId);
+
+        if (!deletedRecipe) {
+            return res.status(404).json({ message: 'Recipe not found' });
+        }
+
+        res.json({ message: 'Recipe deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports = router;
