@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Recipe = require('../models/Recipe'); // Import the Recipe model
+const Recipe = require('./models/recipes'); // Import the Recipe model
 
 // Route for getting all recipes
 router.get('/', async (req, res) => {
