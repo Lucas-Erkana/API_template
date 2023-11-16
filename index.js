@@ -22,10 +22,36 @@ app.get('/', (req,res)=>{
     res.send({title: 'Books'});
 })
 
+app.get('/add-note', async (req,res) =>{
+    try {
 
+        await Book.insertMany([
+            {
+                title: "Sons of Anarchy",
+                body: "A book about a son of anarchy",
+            },
+            {
+                title: "Harry Potter",
+                body: "A book about magic",
+            }
+        ])
+    }catch (error) {
+        console.log("err", + error);
+    }
+})
 
-// connectDB().then(()=>{
-//     app.listen.listen(PORT, ()=>{
-//         console.log(`Listening on port ${PORT}`)
-//     })
-// });
+app.get('/books', async (req,res) =>{
+    const book = await Book.find();
+    if (book) {
+        res.json(book)
+    } else {
+        res.send("Something went wrong.")
+    }
+
+})
+
+connectDB().then(()=>{
+    app.listen(PORT, ()=>{
+        console.log(`Listening on port ${PORT}`)
+    })
+});
