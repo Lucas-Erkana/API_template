@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const Book = require('./models/books');
+const User = require('./models/users');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,31 +19,34 @@ const connectDB = async ()=> {
 }
 
 app.get('/', (req,res)=>{
-    res.send({title: 'Books'});
+    res.send({username: 'User'});
 })
 
-app.get('/add-note', async (req,res) =>{
+app.get('/add-user', async (req,res) =>{
     try {
 
-        await Book.insertMany([
+        await User.insertMany([
             {
-                title: "Sons of Anarchy",
-                body: "A book about a son of anarchy",
+                username: "lucas",
+                email: "erkanalucas@gmail.com",
+                password: "123456",
             },
             {
-                title: "Harry Potter",
-                body: "A book about magic",
+                username: "david",
+                email: "daviderkana@gmail.com",
+                password: "123456",
             }
         ])
+        res.send('User added...')
     }catch (error) {
         console.log("err", + error);
     }
 })
 
-app.get('/books', async (req,res) =>{
-    const book = await Book.find();
-    if (book) {
-        res.json(book)
+app.get('/users', async (req,res) =>{
+    const user = await User.find();
+    if (user) {
+        res.json(user)
     } else {
         res.send("Something went wrong.")
     }
