@@ -4,12 +4,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes'); // Import user routes
+const recipeRoutes = require('./routes/recipeRoutes'); // Import recipe routes
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
-app.use(bodyParser.json()); // Add this line
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connect to MongoDB
@@ -24,8 +25,9 @@ const connectDB = async () => {
     }
 };
 
-// Use userRoutes for handling user-related paths
+// Use routes for handling paths
 app.use('/', userRoutes);
+app.use('/', recipeRoutes); // Use recipeRoutes
 
 // Connect to the database and start the server
 connectDB().then(() => {
