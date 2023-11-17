@@ -8,7 +8,7 @@ router.use(express.json());
 
 // Route to get the root URL
 router.get('/', (req, res) => {
-    res.send({username: 'Welcome to the Recipe API by Lucas Erkana'});
+    res.send({'Welcome to the Recipe API by Lucas Erkana'});
 });
 
 // Route to add a new user
