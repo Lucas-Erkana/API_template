@@ -12,6 +12,10 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    role: {
+        type: String,
+        required: true,
+    },
     password: {
         type: String,
         required: true,
@@ -24,6 +28,7 @@ UserSchema.pre('save', async function(next) {
     if (this.isModified('password')) {
         // Hash the password and replace it
         this.password = await bcrypt.hash(this.password, saltRounds);
+        this.username = await bcrypt.hash(this.password, saltRounds);
     }
     next();
 });
