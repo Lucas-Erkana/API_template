@@ -8,10 +8,10 @@ router.use(express.json());
 
 // Route to get the root URL
 router.get('/', (req, res) => {
-    res.send({username: 'User'});
+    res.send({username: 'Welcome to the Recipe API by Lucas Erkana'});
 });
 
-// Route to add a new user (updated to handle POST request)
+// Route to add a new user
 router.post('/users', async (req, res) => {
     try {
         const newUser = new User(req.body); // Create a new user with the request body data
@@ -19,7 +19,7 @@ router.post('/users', async (req, res) => {
         res.status(201).send('User added successfully');
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).send("Error adding user" + error.message);
+        res.status(500).send("Error adding user: " + error.message);
     }
 });
 
@@ -31,6 +31,25 @@ router.get('/users', async (req, res) => {
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send("Error retrieving users");
+    }
+});
+
+// Route to update a user
+router.put('/users/:id', async (req, res) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id, // Get the _id from URL parameter
+            req.body, // Update user with data from request body
+            { new: true } // Return the updated object
+        );
+        if (updatedUser) {
+            res.json(updatedUser);
+        } else {
+            res.status(404).send('User not found');
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Error updating user: " + error.message);
     }
 });
 
