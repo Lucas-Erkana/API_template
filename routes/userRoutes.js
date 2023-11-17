@@ -19,7 +19,7 @@ router.post('/users', async (req, res) => {
         res.status(201).send('User added successfully');
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).send("Error adding user");
+        res.status(500).send("Error adding user" + error.message);
     }
 });
 
