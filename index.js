@@ -8,10 +8,18 @@ const recipeRoutes = require('./routes/recipeRoutes'); // Import recipe routes
 const cors = require('cors');
 
 //include the Access-Control-Allow-Origin header in its responses.
+const allowedOrigins = ['http://127.0.0.1:5500', 'https://code-alpha-recipe-book.vercel.app/'];
 const corsOptions = {
-    origin: '*', // or your front-end's domain
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     optionsSuccessStatus: 200
 };
+
 app.use(cors(corsOptions));
 
 
