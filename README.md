@@ -117,6 +117,65 @@ MONGO_URL = mongodb+srv://recipebookwebsite:u1jxF2qU7UnFIKEi@cluster0.uzbzxft.mo
 ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+Sure, here's how you can include the "Usage" section in your `README.md` file to guide users on how to use your Recipe Website API through Postman:
+
+---
+
+## 💻 Usage <a name="usage"></a>
+
+After starting the server with `npm start`, you can use Postman to interact with the API. If you don't have Postman installed, you can use it directly in your browser [here](https://web.postman.co/workspace/My-Workspace~80c6c9a1-1856-44c4-8f45-dc93fabc7188/request/create?requestId=359ef886-fef6-46be-a481-46db2fe2b5e9).
+
+### To CREATE a User:
+
+1. Set the request type to `POST`.
+2. Enter the URL: `http://localhost:3000/users`.
+3. Click on `Body`, then select `raw` and choose `JSON`.
+4. Add the following user details in the request body:
+    ```json
+    {
+        "username": "john",
+        "email": "john@gmail.com",
+        "role": "user",
+        "password": "1234567"
+    }
+    ```
+5. Click `Send`.
+
+### To READ Users:
+
+- To fetch all users:
+  1. Set the request type to `GET`.
+  2. Enter the URL: `http://localhost:3000/users`.
+  3. Click `Send`.
+
+- To fetch a specific user:
+  1. Set the request type to `GET`.
+  2. Enter the URL: `http://localhost:3000/users/[user-id]` (replace `[user-id]` with the actual user ID).
+  3. Click `Send`.
+
+### To UPDATE a User:
+
+1. Set the request type to `PUT`.
+2. Enter the URL: `http://localhost:3000/users/[user-id]` (replace `[user-id]` with the user ID you want to update).
+3. In the `Body` section, select `raw` and choose `JSON`.
+4. Add the updated user details. For example:
+    ```json
+    {
+        "username": "johndoe"
+    }
+    ```
+5. Click `Send`.
+
+### To DELETE a User:
+
+1. Set the request type to `DELETE`.
+2. Enter the URL: `http://localhost:3000/users/[user-id]` (replace `[user-id]` with the user ID you want to delete).
+3. Click `Send`.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 ## 👥 Authors <a name="authors"></a>
 
 👤 **Lucas Erkana**
